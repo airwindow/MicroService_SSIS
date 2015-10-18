@@ -39,28 +39,27 @@ def student_list(request):
 		return JSONResponse(serializer.errors, status=400)
 
 
- #    @csrf_exempt
-	# def student_detail(request, pk):
- #    	"""
- #    	Retrieve, update or delete a code snippet.
- #    	"""
- #    	try:
- #        	student = Student.objects.get(pk=pk)
- #    	except Student.DoesNotExist:
- #        	return HttpResponse(status=404)
+@csrf_exempt
+def student_detail(request, sID):
+	"""
+	Retrieve, update or delete a code snippet.
+	"""
+	try:
+		student = Student.objects.get(studentID=sID)
+	except Student.DoesNotExist:
+		return HttpResponse(status=404)
 
- #    	if request.method == 'GET':
- #        	serializer = StudentSerializer(student)
- #        	return JSONResponse(serializer.data)
+	if request.method == 'GET':
+		serializer = StudentSerializer(student)
+		return JSONResponse(serializer.data)
 
- #    	elif request.method == 'PUT':
- #        	data = JSONParser().parse(request)
- #        	serializer = StudentSerializer(student, data=data)
- #        	if serializer.is_valid():
- #            	serializer.save()
- #            	return JSONResponse(serializer.data)
- #        	return JSONResponse(serializer.errors, status=400)
-
- #    	elif request.method == 'DELETE':
- #        	student.delete()
- #        	return HttpResponse(status=204)
+	elif request.method == 'PUT':
+		data = JSONParser().parse(request)
+		serializer = StudentSerializer(student, data=data)
+		if serializer.is_valid():
+			serializer.save()
+			return JSONResponse(serializer.data)
+		return JSONResponse(serializer.errors, status=400)
+	elif request.method == 'DELETE':
+		student.delete()
+		return HttpResponse(status=204)
