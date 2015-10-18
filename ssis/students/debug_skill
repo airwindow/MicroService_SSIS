@@ -1,0 +1,23 @@
+Check database records
+https://www.sqlite.org/cli.html
+sqlite3 db.sqlite3
+.tables
+select * from students_student;
+
+
+Debug through command line
+python manage.py shell
+from students.models import Student
+from students.serializers import StudentSerializer
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+
+
+Create new record in the databases
+student = Student(StudentID='jy2653')
+student.save()
+
+
+students = Student.objects.all()
+serializer = StudentSerializer(students, many=True)
+serializer.data
