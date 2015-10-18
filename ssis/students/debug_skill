@@ -1,3 +1,9 @@
+Run server
+python ./manage.py runserver
+Update Schema
+python manage.py migrate
+
+
 Check database records
 https://www.sqlite.org/cli.html
 sqlite3 db.sqlite3

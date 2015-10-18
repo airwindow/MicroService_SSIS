@@ -39,6 +39,7 @@ def student_list(request):
 		return JSONResponse(serializer.errors, status=400)
 
 
+
 @csrf_exempt
 def student_detail(request, sID):
 	"""
@@ -60,6 +61,7 @@ def student_detail(request, sID):
 			serializer.save()
 			return JSONResponse(serializer.data)
 		return JSONResponse(serializer.errors, status=400)
+
 	elif request.method == 'DELETE':
 		student.delete()
 		return HttpResponse(status=204)
