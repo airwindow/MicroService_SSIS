@@ -5,8 +5,9 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from courses.models import Course
-from courses.serializers import CourseSerializer
+from courses.models import Course,Enrollment
+#from students.models import Student
+from courses.serializers import CourseSerializer,EnrollSerializer
 
 class JSONResponse(HttpResponse):
     """
@@ -65,3 +66,89 @@ def course_detail(request, cID):
 		return HttpResponse(status=204)
 
 
+
+
+
+@csrf_exempt
+def enroll_list(request):
+	"""
+   	List all enrollments, or create a new enrollment.
+	"""
+	if request.method == 'GET':
+		enroll = Enrollment.objects.all()
+		serializer = EnrollSerializer(enroll, many=True)
+		print serializer.data
+		return JSONResponse(serializer.data)
+		
+	elif request.method == 'POST':
+		data = JSONParser().parse(request)
+		serializer = EnrollSerializer(data=data)
+		if serializer.is_valid():
+			serializer.save()
+			return JSONResponse(serializer.data, status=201)
+		return JSONResponse(serializer.errors, status=400)
+
+
+@csrf_exempt
+def enroll_student_detail(request, sID):
+	"""
+	Retrieve, update or delete a enrollment.
+	"""
+	try:
+		enroll = Enrollment.objects.get(studentID=sID)
+		serializer = EnrollSerializer(enroll)
+	except Enrollment.DoesNotExist:
+		return HttpResponse(status=404)
+
+	if request.method == 'GET':
+		serializer = EnrollSerializer(enroll)
+		return JSONResponse(serializer.data)
+
+	elif request.method == 'DELETE':
+		enroll.delete()
+		return HttpResponse(status=204)
+
+@csrf_exempt
+def enroll_course_detail(request, cID):
+	"""
+	Retrieve, update or delete a enrollment.
+	"""
+	try:
+		enroll = Enrollment.objects.get(courseID=cID)
+		serializer = EnrollSerializer(enroll)
+	except Enrollment.DoesNotExist:
+		return HttpResponse(status=404)
+
+	if request.method == 'GET':
+		serializer = EnrollSerializer(enroll)
+		return JSONResponse(serializer.data)
+
+	elif request.method == 'DELETE':
+		enroll.delete()
+		return HttpResponse(status=204)
+
+@csrf_exempt
+def enroll_detail(request, sID, cID):
+	"""
+	Retrieve, update or delete a enrollment.
+	"""
+	try:
+		enroll = Enrollment.objects.filter(studentID=sID).filter(courseID=cID)
+		serializer = EnrollSerializer(enroll)
+	except Enrollment.DoesNotExist:
+		return HttpResponse(status=404)
+
+	if request.method == 'GET':
+		serializer = EnrollSerializer(enroll)
+		return JSONResponse(serializer.data)
+
+	elif request.method == 'PUT':
+		data = JSONParser().parse(request)
+		serializer = EnrollSerializer(enroll, data=data)
+		if serializer.is_valid():
+			serializer.save()
+			return JSONResponse(serializer.data)
+		return JSONResponse(serializer.errors, status=400)
+	elif request.method == 'DELETE':
+		enroll.delete()
+		return HttpResponse(status=204)
