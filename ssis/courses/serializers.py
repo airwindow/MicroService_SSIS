@@ -2,6 +2,7 @@ from rest_framework import serializers
 from courses.models import Course
 from courses.models import Enrollment
 from students.models import Student
+from students.serializers import StudentSerializer
 class CourseSerializer(serializers.Serializer):
 
     # class Meta:
@@ -30,15 +31,15 @@ class CourseSerializer(serializers.Serializer):
         instance.save()
         return instance
 
-class EnrollSerializer(serializers.Serializer):
+class EnrollSerializer(serializers.HyperlinkedModelSerializer):
 
-    # class Meta:
-    #     model = Student
-    #     fields = ('studentID', 'lastName', 'firstName')
+    courseID = CourseSerializer('courseID')
+    studentID = serializers.CharField(required=False, allow_blank=True, max_length=100)
 
+    class Meta:
+        model = Enrollment
+        fields = ('courseID', 'studentID')
 
-    courseID = serializers.CharField(required=True, allow_blank=False, max_length=100)
-    studentID = serializers.CharField(required=True, allow_blank=False, max_length=100)
    
     def create(self, validated_data):
         """

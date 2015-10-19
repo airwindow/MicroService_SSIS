@@ -12,7 +12,7 @@ class Course(models.Model):
 
 class Enrollment(models.Model):
 	courseID = models.ForeignKey('Course')
-	studentID =  models.ForeignKey('students.Student')
+	studentID =  models.CharField(primary_key=True, max_length=100, blank=False, default='')
 	
 	class Meta:
 		ordering = ('courseID', 'studentID')
