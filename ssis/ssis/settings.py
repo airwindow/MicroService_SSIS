@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
+import djcelery
+djcelery.setup_loader()
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -46,6 +49,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'djcelery',
+    'mrouters',
     'students',
     'courses',
 )
@@ -111,3 +116,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+BROKER_URL = 'amqp://ssis:ssis@localhost:5672/ssisvhost'
+
+from kombu import Exchange, Queue
+
+CELERY_QUEUE = (
+    Queue('default', Exchange('default'), routing_key='default'),
+    Queue('response', Exchange('response', type='topic'), routing_key='*.response'),
+    Queue('result', Exchange('result', type='topic'), routing_key='*.result'),
+    Queue('students', Exchange('students', type='topic'), routing_key='students.#'),
+    Queue('courses', Exchange('courses', type='topic'), routing_key='courses.#'),
+)
+CELERY_DEFAULT_QUEUE = 'default'
+CELERY_DEFAULT_EXCHANGE_TYPE = 'direct'
+CELERY_DEFAULT_ROUTING_KEY = 'default'
