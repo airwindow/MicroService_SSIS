@@ -121,7 +121,7 @@ BROKER_URL = 'amqp://ssis:ssis@localhost:5672/ssisvhost'
 
 from kombu import Exchange, Queue
 
-CELERY_QUEUE = (
+CELERY_QUEUES = (
     Queue('default', Exchange('default'), routing_key='default'),
     Queue('response', Exchange('response', type='topic'), routing_key='*.response'),
     Queue('result', Exchange('result', type='topic'), routing_key='*.result'),
