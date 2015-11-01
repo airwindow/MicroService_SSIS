@@ -7,6 +7,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from students.models import Student
 from students.serializers import StudentSerializer
+#from students.tasks import process_request
 
 class JSONResponse(HttpResponse):
     """
@@ -65,3 +66,6 @@ def student_detail(request, sID):
 	elif request.method == 'DELETE':
 		student.delete()
 		return HttpResponse(status=204)
+
+def test(request):
+    return# process_request(request)
