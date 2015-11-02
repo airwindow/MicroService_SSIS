@@ -84,12 +84,37 @@ WSGI_APPLICATION = 'ssis.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.path.join(BASE_DIR,'mysqldb2.db'),
+        'USER': 'ssis',
+        'PASSWORD': '123456',
+        'HOST':'localhost',
+        'PORT': '',
+    }
+}
+"""
+
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'NAME': os.path.join(BASE_DIR,'db.sqlite3'),
+    },
+    'student1': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR,'stu1.sqlite3'),
+    },
+    'student2':{
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR,'stu2.sqlite3'),
+    },
+    'course': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR,'course.sqlite3'),
+    },
 }
 
 

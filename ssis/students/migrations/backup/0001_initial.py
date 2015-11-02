@@ -26,6 +26,7 @@ class Migration(migrations.Migration):
                 ('studentID', models.CharField(default=b'', max_length=100, serialize=False, primary_key=True)),
                 ('lastName', models.CharField(default=b'', max_length=100, blank=True)),
                 ('firstName', models.CharField(default=b'', max_length=100, blank=True)),
+                ('timing', models.DateField(auto_now_add=True)),
             ],
             options={
                 'ordering': ('studentID',),

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import django.utils.timezone
 
 
 class Migration(migrations.Migration):
@@ -26,6 +27,7 @@ class Migration(migrations.Migration):
                 ('studentID', models.CharField(default=b'', max_length=100, serialize=False, primary_key=True)),
                 ('lastName', models.CharField(default=b'', max_length=100, blank=True)),
                 ('firstName', models.CharField(default=b'', max_length=100, blank=True)),
+                ('timing', models.DateTimeField(default=django.utils.timezone.now)),
             ],
             options={
                 'ordering': ('studentID',),

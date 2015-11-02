@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from courses.models import Course
 from courses.models import Enrollment
-from students.models import Student
-from students.serializers import StudentSerializer
+#from students.models import Student
+#from students.serializers import StudentSerializer
 class CourseSerializer(serializers.Serializer):
 
     # class Meta:
@@ -34,7 +34,7 @@ class CourseSerializer(serializers.Serializer):
 class EnrollSerializer(serializers.HyperlinkedModelSerializer):
 
     courseID = CourseSerializer('courseID')
-    studentID = serializers.CharField(required=False, allow_blank=True, max_length=100)
+    studentID = serializers.CharField(required=True, allow_blank=False, max_length=100)
 
     class Meta:
         model = Enrollment
