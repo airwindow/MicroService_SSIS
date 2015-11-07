@@ -18,7 +18,7 @@ class CourseSerializer(serializers.Serializer):
         """
         Create and return a new `Course` instance, given the validated data.
         """
-        return Course.objects.create(**validated_data)
+        return Course.objects.using('course').create(**validated_data)
 
     def update(self, instance, validated_data):
         """
@@ -28,7 +28,7 @@ class CourseSerializer(serializers.Serializer):
         instance.courseTitle = validated_data.get('courseTitle', instance.courseTitle)
         instance.roomNum = validated_data.get('roomNum', instance.roomNum)
 
-        instance.save()
+        instance.save(using='course')
         return instance
 
 class EnrollSerializer(serializers.HyperlinkedModelSerializer):
@@ -45,7 +45,7 @@ class EnrollSerializer(serializers.HyperlinkedModelSerializer):
         """
         Create and return a new `Enrollment` instance, given the validated data.
         """
-        return Enrollment.objects.create(**validated_data)
+        return Enrollment.objects.using('courses').create(**validated_data)
 
     def update(self, instance, validated_data):
         """
@@ -54,5 +54,5 @@ class EnrollSerializer(serializers.HyperlinkedModelSerializer):
         instance.courseID = validated_data.get('courseID', instance.courseID)
         instance.studentID = validated_data.get('studentID', instance.studentID)
        
-        instance.save()
+        instance.save(using='course')
         return instance
