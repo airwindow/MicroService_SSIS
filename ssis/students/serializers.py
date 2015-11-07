@@ -17,7 +17,11 @@ class StudentSerializer(serializers.Serializer):
         """
         Create and return a new `Student` instance, given the validated data.
         """
-        return Student.objects.create(**validated_data)
+        #print validated_data["studentID"][0]>="n"
+        if validated_data["studentID"][0]>="n":
+            return Student.objects.using('student2').create(**validated_data)
+        else:
+            return Student.objects.using('student1').create(**validated_data)
 
     def update(self, instance, validated_data):
         """
@@ -26,8 +30,10 @@ class StudentSerializer(serializers.Serializer):
         instance.studentID = validated_data.get('studentID', instance.studentID)
         instance.lastName = validated_data.get('lastName', instance.lastName)
         instance.firstName = validated_data.get('firstName', instance.firstName)
-
-        instance.save()
+        if validated_data["studentID"][0]>="n":
+            instance.save(using='student2')
+        else:
+            instance.save(using='student1')
         return instance
 
 class EnrollSerializer(serializers.HyperlinkedModelSerializer):
@@ -44,7 +50,10 @@ class EnrollSerializer(serializers.HyperlinkedModelSerializer):
         """
         Create and return a new `Enrollment` instance, given the validated data.
         """
-        return Enrollment.objects.create(**validated_data)
+        if validated_data["studentID"][0]>="n":
+            return Enrollment.objects.using('student2').create(**validated_data)
+        else:
+            return Enrollment.objects.using('student1').create(**validated_data)
 
     def update(self, instance, validated_data):
         """
@@ -53,5 +62,8 @@ class EnrollSerializer(serializers.HyperlinkedModelSerializer):
         instance.courseID = validated_data.get('courseID', instance.courseID)
         instance.studentID = validated_data.get('studentID', instance.studentID)
        
-        instance.save()
+        if validated_data["studentID"][0]>="n":
+            instance.save(using='student2')
+        else:
+            instance.save(using='student1')
         return instance

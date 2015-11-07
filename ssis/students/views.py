@@ -26,19 +26,24 @@ def student_list(request):
    	List all code students, or create a new students.
 	"""
 	if request.method == 'GET':
-		students = Student.objects.all()
-		serializer = StudentSerializer(students, many=True)
-		print serializer.data
-		return JSONResponse(serializer.data)
+		s1 = Student.objects.using('student1').all()
+		s2 = Student.objects.using('student2').all()
+		#students = s1&s2
+
+		serializer1 = StudentSerializer(s1, many=True)
+		#print serializer1.data
+		serializer2 = StudentSerializer(s2, many=True)
+		#print serializer2.data
+		return JSONResponse(serializer1.data+serializer2.data)
 		
 	elif request.method == 'POST':
 		data = JSONParser().parse(request)
+		print data
 		serializer = StudentSerializer(data=data)
 		if serializer.is_valid():
 			serializer.save()
 			return JSONResponse(serializer.data, status=201)
 		return JSONResponse(serializer.errors, status=400)
-
 
 
 @csrf_exempt
@@ -47,7 +52,10 @@ def student_detail(request, sID):
 	Retrieve, update or delete a code snippet.
 	"""
 	try:
-		student = Student.objects.get(studentID=sID)
+		if sID[0]<="m":
+			student = Student.objects.using('student1').get(studentID=sID)
+		else:
+			student = Student.objects.using('student2').get(studentID=sID)
 	except Student.DoesNotExist:
 		return HttpResponse(status=404)
 
@@ -78,10 +86,12 @@ def enroll_list(request):
    	List all enrollments, or create a new enrollment.
 	"""
 	if request.method == 'GET':
-		enroll = Enrollment.objects.all()
-		serializer = EnrollSerializer(enroll, many=True)
-		print serializer.data
-		return JSONResponse(serializer.data)
+		enroll1 = Enrollment.objects.using("student1").all()
+		enroll2 = Enrollment.objects.using("student2").all()
+		serializer1 = EnrollSerializer(enroll1, many=True)
+		serializer2 = EnrollSerializer(enroll2, many=True)
+		#print serializer1.data
+		return JSONResponse(serializer1.data+serializer2.data)
 		
 	elif request.method == 'POST':
 		data = JSONParser().parse(request)
@@ -98,7 +108,10 @@ def enroll_student_detail(request, sID):
 	Retrieve, update or delete a enrollment.
 	"""
 	try:
-		enroll = Enrollment.objects.get(studentID=sID)
+		if sID[0]<="m":
+			enroll = Enrollment.objects.using('student1').get(studentID=sID)
+		else:
+			enroll = Enrollment.objects.using('student2').get(studentID=sID)
 		serializer = EnrollSerializer(enroll)
 	except Enrollment.DoesNotExist:
 		return HttpResponse(status=404)
@@ -118,7 +131,10 @@ def enroll_detail(request, sID, cID):
 	Retrieve, update or delete a enrollment.
 	"""
 	try:
-		enroll = Enrollment.objects.filter(studentID=sID).filter(courseID=cID)
+		if sID[0]<="m":
+			enroll = Enrollment.objects.using('student1').filter(studentID=sID).filter(courseID=cID)
+		else:
+			enroll = Enrollment.objects.using('student2').filter(studentID=sID).filter(courseID=cID)
 		serializer = EnrollSerializer(enroll)
 	except Enrollment.DoesNotExist:
 		return HttpResponse(status=404)
