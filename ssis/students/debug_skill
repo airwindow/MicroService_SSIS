@@ -27,3 +27,11 @@ student.save()
 students = Student.objects.all()
 serializer = StudentSerializer(students, many=True)
 serializer.data
+
+python manage.py runserver shell
+
+
+
+
+
+http://nullege.com/codes/show/src%40s%40o%40south2-HEAD%40tests%40schema%40tests.py/89/django.db.connection.schema_editor/python

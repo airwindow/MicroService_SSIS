@@ -13,6 +13,14 @@ from courses.models import Course
 from courses.models import Enrollment as CEnrollment
 from courses.serializers import EnrollSerializer as CEnrollSerializer
 
+
+# Import Libs for changing Schema 
+from django.db import models
+from django.db import connection, DatabaseError, IntegrityError
+from django.db.models.fields import IntegerField, TextField, CharField, SlugField
+
+
+
 class JSONResponse(HttpResponse):
     """
     An HttpResponse that renders its content into JSON.
@@ -80,9 +88,6 @@ def student_detail(request, sID):
 
 
 
-
-
-
 @csrf_exempt
 def enroll_list(request):
 	"""
@@ -119,6 +124,7 @@ def enroll_list(request):
 		return JSONResponse(serializer_stu.errors, status=400)
 
 
+
 @csrf_exempt
 def enroll_student_detail(request, sID):
 	"""
@@ -143,6 +149,7 @@ def enroll_student_detail(request, sID):
 		enroll_stu.delete()
 		enroll_cou.delete()
 		return HttpResponse(status=204)
+
 
 
 @csrf_exempt
@@ -178,3 +185,32 @@ def enroll_detail(request, sID, cID):
 		enroll_stu.delete()
 		enroll_cou.delete()
 		return HttpResponse(status=204)
+
+
+
+
+@csrf_exempt
+def schema_operations(request):
+	"""
+	add column into the schema
+	"""
+	if request.method == 'POST':
+		data = JSONParser().parse(request)
+		field_name = data["field_name"]
+		field_type = data["field_type"]
+		default_value = data["default_value"]
+		if field_type == "IntegerField" :
+			field = models.IntegerField(default = default_value)
+		elif field_type == "TextField" :
+			field = models.TextField(default = default_value)
+		elif field_type == "SlugField" :
+			field = models.SlugField(default = default_value)
+		else :
+			field = models.CharField(max_length=50, default = default_value)
+		field.set_attributes_from_name(field_name)
+		try:
+			with connection.schema_editor() as schema_editor:
+				schema_editor.add_field(Student, field)
+		except Student.DoesNotExist:
+			return HttpResponse(status=404)
+		return HttpResponse(status=200)
