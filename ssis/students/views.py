@@ -10,6 +10,9 @@ from students.models import Enrollment
 from students.serializers import StudentSerializer
 from students.serializers import EnrollSerializer
 from courses.models import Course
+from courses.models import Enrollment as CEnrollment
+from courses.serializers import EnrollSerializer as CEnrollSerializer
+
 class JSONResponse(HttpResponse):
     """
     An HttpResponse that renders its content into JSON.
@@ -30,7 +33,6 @@ def student_list(request):
 		s1 = Student.objects.using('student1').all()
 		s2 = Student.objects.using('student2').all()
 		#students = s1&s2
-
 		serializer1 = StudentSerializer(s1, many=True)
 		#print serializer1.data
 		serializer2 = StudentSerializer(s2, many=True)
@@ -107,12 +109,14 @@ def enroll_list(request):
 				StuObj = Student.objects.using("student2").get(studentID=data["studentID"])
 		except Student.DoesNotExist:
 			return HttpResponse(status=404)
-		serializer = EnrollSerializer(data=data)
-		if serializer.is_valid():
-			serializer.save()
-			return JSONResponse(serializer.data, status=201)
+		serializer_stu = EnrollSerializer(data=data)
+		serializer_cou = CEnrollSerializer(data=data)
+		if serializer_stu.is_valid() and serializer_cou.is_valid():
+			serializer_stu.save()
+			serializer_cou.save()
+			return JSONResponse(serializer_stu.data, status=201)
 
-		return JSONResponse(serializer.errors, status=400)
+		return JSONResponse(serializer_stu.errors, status=400)
 
 
 @csrf_exempt
@@ -122,19 +126,22 @@ def enroll_student_detail(request, sID):
 	"""
 	try:
 		if sID[0]<="m":
-			enroll = Enrollment.objects.using('student1').get(studentID=sID)
+			enroll_stu = Enrollment.objects.using('student1').get(studentID=sID)
 		else:
-			enroll = Enrollment.objects.using('student2').get(studentID=sID)
-		serializer = EnrollSerializer(enroll)
+			enroll_stu = Enrollment.objects.using('student2').get(studentID=sID)
+		enroll_cou = CEnrollment.objects.using('course').get(studentID=sID)
+		serializer_stu = EnrollSerializer(enroll_stu)
+		serializer_cou = CEnrollSerializer(enroll_cou)
 	except Enrollment.DoesNotExist:
 		return HttpResponse(status=404)
 
 	if request.method == 'GET':
-		serializer = EnrollSerializer(enroll)
-		return JSONResponse(serializer.data)
+		serializer = EnrollSerializer(enroll_stu)
+		return JSONResponse(serializer_stu.data)
 
 	elif request.method == 'DELETE':
-		enroll.delete()
+		enroll_stu.delete()
+		enroll_cou.delete()
 		return HttpResponse(status=204)
 
 
@@ -145,24 +152,29 @@ def enroll_detail(request, sID, cID):
 	"""
 	try:
 		if sID[0]<="m":
-			enroll = Enrollment.objects.using('student1').filter(studentID=sID).filter(courseID=cID)
+			enroll_stu = Enrollment.objects.using('student1').filter(studentID=sID).filter(courseID=cID)
 		else:
-			enroll = Enrollment.objects.using('student2').filter(studentID=sID).filter(courseID=cID)
-		serializer = EnrollSerializer(enroll)
+			enroll_stu = Enrollment.objects.using('student2').filter(studentID=sID).filter(courseID=cID)
+		enroll_cou = CEnrollment.objects.using('course').filter(studentID=sID).filter(courseID=cID)
+		serializer_stu = EnrollSerializer(enroll_stu)
+		serializer_cou = CEnrollSerializer(enroll_cou)
 	except Enrollment.DoesNotExist:
 		return HttpResponse(status=404)
 
 	if request.method == 'GET':
-		serializer = EnrollSerializer(enroll)
-		return JSONResponse(serializer.data)
+		serializer = EnrollSerializer(enroll_stu)
+		return JSONResponse(serializer_stu.data)
 
 	elif request.method == 'PUT':
 		data = JSONParser().parse(request)
-		serializer = EnrollSerializer(enroll, data=data)
-		if serializer.is_valid():
-			serializer.save()
+		serializer_stu = EnrollSerializer(enroll_stu, data=data)
+		serializer_cou = CEnrollSerializer(enroll_cou,data=data)
+		if serializer_stu.is_valid() and serializer_cou.is_valid():
+			serializer_stu.save()
+			serializer_cou.save()
 			return JSONResponse(serializer.data)
-		return JSONResponse(serializer.errors, status=400)
+		return JSONResponse(serializer_stu.errors, status=400)
 	elif request.method == 'DELETE':
-		enroll.delete()
+		enroll_stu.delete()
+		enroll_cou.delete()
 		return HttpResponse(status=204)

@@ -7,6 +7,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from courses.models import Course,Enrollment
 from students.models import Student
+from students.models import Enrollment as SEnrollment
 from courses.serializers import CourseSerializer,EnrollSerializer
 from students.serializers import EnrollSerializer as SEnrollSerializer
 
@@ -102,22 +103,36 @@ def enroll_list(request):
 
 @csrf_exempt
 def enroll_course_detail(request, cID):
+	enroll_stu1 = None
 	try:
-		enroll = Enrollment.objects.using('course').get(courseID=cID)
-		serializer = EnrollSerializer(enroll)
+		enroll_stu1 = SEnrollment.objects.using('student1').get(courseID=cID) 
+	except SEnrollment.DoesNotExist:
+		pass
+	enroll_stu2 = None
+	try:
+		enroll_stu2 = SEnrollment.objects.using('student2').get(courseID=cID)
+	except SEnrollment.DoesNotExist:
+		pass
+	try:
+		enroll_cou = Enrollment.objects.using('course').get(courseID=cID)
+		serializer = EnrollSerializer(enroll_cou)
 	except Enrollment.DoesNotExist:
 		return HttpResponse(status=404)
 
 	if request.method == 'GET':
-		serializer = EnrollSerializer(enroll)
+		serializer = EnrollSerializer(enroll_cou)
 		return JSONResponse(serializer.data)
 
 	elif request.method == 'DELETE':
-		enroll.delete(using='course')
+		enroll_cou.delete(using='course')
+		if enroll_stu1:
+			enroll_stu1.delete(using='student1')
+		if enroll_stu2:
+			enroll_stu2.delete(using='student2')
 		return HttpResponse(status=204)
 
 @csrf_exempt
-def enroll_detail(request, sIDx, cID):
+def enroll_detail(request, sID, cID):
 
 	#Retrieve, update or delete a enrollment.
 	
@@ -133,11 +148,26 @@ def enroll_detail(request, sIDx, cID):
 
 	elif request.method == 'PUT':
 		data = JSONParser().parse(request)
+		try:
+			if sID[0]<"n":
+				enroll_stu = SEnrollment.objects.using("student1").filter(studentID=sID).filter(courseID=cID)
+			else:
+				enroll_stu = SEnrollment.objects.using("student2").filter(studentID=sID).filter(courseID=cID)
+		except SEnrollment.DoesNotExist:
+			return HttpResponse(status=404)
 		serializer = EnrollSerializer(enroll, data=data)
-		if serializer.is_valid():
+		serializer_stu = SEnrollSerializer(enroll_stu,data=data)
+		if serializer.is_valid() and serializer_stu.is_valid():
 			serializer.save()
+			serializer_stu.save()
 			return JSONResponse(serializer.data)
 		return JSONResponse(serializer.errors, status=400)
 	elif request.method == 'DELETE':
-		enroll.delete(using='course')
+		enroll.delete()
+		if sID[0]<"n":
+			enroll_stu = SEnrollment.objects.using("student1").filter(studentID=sID).filter(courseID=cID)
+			enroll_stu.delete()
+		else:
+			enroll_stu = SEnrollment.objects.using("student2").filter(studentID=sID).filter(courseID=cID)
+			enroll_stu.delete()
 		return HttpResponse(status=204)
