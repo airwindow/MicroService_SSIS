@@ -6,8 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from courses.models import Course,Enrollment
-#from students.models import Student
+from students.models import Student
 from courses.serializers import CourseSerializer,EnrollSerializer
+from students.serializers import EnrollSerializer as SEnrollSerializer
 
 class JSONResponse(HttpResponse):
     """
@@ -75,23 +76,32 @@ def enroll_list(request):
 	if request.method == 'GET':
 		enroll = Enrollment.objects.using('course').all()
 		serializer = EnrollSerializer(enroll, many=True)
-		print serializer.data
 		return JSONResponse(serializer.data)
 		
 	elif request.method == 'POST':
 		data = JSONParser().parse(request)
-		serializer = EnrollSerializer(data=data)
-		if serializer.is_valid():
-			serializer.save()
-			return JSONResponse(serializer.data, status=201)
-		return JSONResponse(serializer.errors, status=400)
+		try:
+			CouObj = Course.objects.using("course").get(courseID=data["courseID"])
+		except Course.DoesNotExist:
+			return HttpResponse(status=404)
+		try:
+			if data["studentID"]<"n":
+				StuObj = Student.objects.using("student1").get(studentID=data["studentID"])
+			else:
+				StuObj = Student.objects.using("student2").get(studentID=data["studentID"])
+		except Student.DoesNotExist:
+			return HttpResponse(status=404)
+		serializer_cou = EnrollSerializer(data=data)
+		serializer_stu = SEnrollSerializer(data=data)
+		if serializer_stu.is_valid() and serializer_cou.is_valid():
+			serializer_stu.save()
+			serializer_cou.save()
+			return JSONResponse(serializer_cou.data, status=201)
+		return JSONResponse(serializer_cou.errors, status=400)
 
 
 @csrf_exempt
 def enroll_course_detail(request, cID):
-	
-	
-	
 	try:
 		enroll = Enrollment.objects.using('course').get(courseID=cID)
 		serializer = EnrollSerializer(enroll)

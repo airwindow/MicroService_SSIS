@@ -36,14 +36,11 @@ class StudentSerializer(serializers.Serializer):
             instance.save(using='student1')
         return instance
 
-class EnrollSerializer(serializers.HyperlinkedModelSerializer):
+class EnrollSerializer(serializers.Serializer):
 
-    studentID = StudentSerializer('studentID')
+    studentID = serializers.CharField(required=False, allow_blank=True, max_length=100)
     courseID  = serializers.CharField(required=True, allow_blank=False, max_length=100)
 
-    class Meta:
-        model = Enrollment
-        fields = ('courseID', 'studentID')
 
    
     def create(self, validated_data):

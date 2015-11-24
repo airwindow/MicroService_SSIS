@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
             name='Enrollment',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('studentID', models.CharField(max_length=100)),
                 ('courseID', models.CharField(max_length=100)),
             ],
             options={
@@ -31,9 +32,8 @@ class Migration(migrations.Migration):
                 'ordering': ('studentID',),
             },
         ),
-        migrations.AddField(
-            model_name='enrollment',
-            name='studentID',
-            field=models.ForeignKey(to='students.Student'),
+        migrations.AlterUniqueTogether(
+            name='enrollment',
+            unique_together=set([('studentID', 'courseID')]),
         ),
     ]

@@ -9,6 +9,7 @@ from students.models import Student
 from students.models import Enrollment
 from students.serializers import StudentSerializer
 from students.serializers import EnrollSerializer
+from courses.models import Course
 class JSONResponse(HttpResponse):
     """
     An HttpResponse that renders its content into JSON.
@@ -95,10 +96,22 @@ def enroll_list(request):
 		
 	elif request.method == 'POST':
 		data = JSONParser().parse(request)
+		try:
+			CouObj = Course.objects.using("course").get(courseID=data["courseID"])
+		except Course.DoesNotExist:
+			return HttpResponse(status=404)
+		try:
+			if data["studentID"][0]<"n" :
+				StuObj = Student.objects.using("student1").get(studentID=data["studentID"])
+			else:
+				StuObj = Student.objects.using("student2").get(studentID=data["studentID"])
+		except Student.DoesNotExist:
+			return HttpResponse(status=404)
 		serializer = EnrollSerializer(data=data)
 		if serializer.is_valid():
 			serializer.save()
 			return JSONResponse(serializer.data, status=201)
+
 		return JSONResponse(serializer.errors, status=400)
 
 

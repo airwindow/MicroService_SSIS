@@ -31,21 +31,18 @@ class CourseSerializer(serializers.Serializer):
         instance.save(using='course')
         return instance
 
-class EnrollSerializer(serializers.HyperlinkedModelSerializer):
+class EnrollSerializer(serializers.Serializer):
 
-    courseID = CourseSerializer('courseID')
+    courseID = serializers.CharField(required=True, allow_blank=False, max_length=100)
     studentID = serializers.CharField(required=True, allow_blank=False, max_length=100)
-
     class Meta:
-        model = Enrollment
-        fields = ('courseID', 'studentID')
-
+        unique_together=(('courseID','studentID'),)
    
     def create(self, validated_data):
         """
         Create and return a new `Enrollment` instance, given the validated data.
         """
-        return Enrollment.objects.using('courses').create(**validated_data)
+        return Enrollment.objects.using('course').create(**validated_data)
 
     def update(self, instance, validated_data):
         """

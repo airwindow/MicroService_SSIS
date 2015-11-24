@@ -12,11 +12,12 @@ class Course(models.Model):
 
 class Enrollment(models.Model):
 
-	courseID = models.ForeignKey('Course')
+	courseID = models.CharField(max_length=100, blank=False)
 	studentID =  models.CharField(max_length=100, blank=False)
 	
 	class Meta:
 		ordering = ('courseID', 'studentID')
+		unique_together=(('courseID','studentID'),)
 
 
 

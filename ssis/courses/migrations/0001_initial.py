@@ -25,11 +25,15 @@ class Migration(migrations.Migration):
             name='Enrollment',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('courseID', models.CharField(max_length=100)),
                 ('studentID', models.CharField(max_length=100)),
-                ('courseID', models.ForeignKey(to='courses.Course')),
             ],
             options={
                 'ordering': ('courseID', 'studentID'),
             },
+        ),
+        migrations.AlterUniqueTogether(
+            name='enrollment',
+            unique_together=set([('courseID', 'studentID')]),
         ),
     ]
