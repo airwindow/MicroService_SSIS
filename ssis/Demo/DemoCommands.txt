@@ -17,7 +17,7 @@ GET: http://127.0.0.1:8000/api/students/ab1234
 --------------------------------------------------------
 
 
-Enroll A New Student (Data Partition)
+Enroll A New Student (Data Partition stu_db1: a-m stu_db2: n-z)
 --------------------------------------------------------
 sqlite3 stu1.sqlite3 
 .tables
@@ -28,7 +28,7 @@ sqlite3 stu2.sqlite3
 select * from students_student;
 
 POST: http://127.0.0.1:8000/api/students/
-{"studentID":"sc0000","lastName":"Cooper","firstName":"Sheldon"}
+{"studentID":"ac0000","lastName":"Cooper","firstName":"Apple"}
 GET: http://127.0.0.1:8000/api/students/
 
 sqlite3 stu1.sqlite3 
@@ -83,14 +83,14 @@ GET: http://127.0.0.1:8000/api/courses/
 
 List Specific Course's Information
 --------------------------------------------------------
-GET: http://127.0.0.1:8000/api/courses/COMS4252
+GET: http://127.0.0.1:8000/api/courses/COMS4231
 --------------------------------------------------------
 
 
 Add A New Course
 --------------------------------------------------------
 POST: http://127.0.0.1:8000/api/courses/
-{"courseID":"COMS4231","courseTitle":"Algorithms","roomNum":"MUDD833"}
+{"courseID":"COMS4225","courseTitle":"Computer Network","roomNum":"MUDD633"}
 GET: http://127.0.0.1:8000/api/courses/
 --------------------------------------------------------
 
@@ -137,7 +137,7 @@ GET: http://127.0.0.1:8000/api/students/enrollment/
 Add A New Enrollment Record
 --------------------------------------------------------
 POST: http://127.0.0.1:8000/api/students/enrollment/
-{"studentID":"ab1234","courseID":"COMS4231"}
+{"studentID":"ac0000","courseID":"COMS4225"}
 GET: http://127.0.0.1:8000/api/students/enrollment/
 --------------------------------------------------------
 
@@ -146,8 +146,7 @@ Delete A Specific Enrollment Record By StudentID, CourseID
 --------------------------------------------------------
 List All Enrollment Records
 GET: http://127.0.0.1:8000/api/students/enrollment/
-DELETE: http://127.0.0.1:8000/api/students/enrollment/COMS4231/ab1234
-{"studentID":"ab1234","courseID":"COMS4231"}
+DELETE: http://127.0.0.1:8000/api/students/enrollment/COMS4225/ac0000
 List All Enrollment Records
 GET: http://127.0.0.1:8000/api/students/enrollment/
 --------------------------------------------------------
@@ -160,6 +159,6 @@ GET: http://127.0.0.1:8000/api/students/enrollment/
 Add new field into student schema (Change Database Schema)
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 http://127.0.0.1:8000/api/students/schema/
-{"field_name":"GPA","field_type":"IntegerField","default_value":0.0}
+{"field_name":"GPA","field_type":"IntegerField","default_value":3.5}
 --------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
