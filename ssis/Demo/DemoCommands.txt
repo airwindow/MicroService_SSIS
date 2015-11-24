@@ -1,0 +1,156 @@
+Demo Plugin
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+chrome-extension://fdmmgilgnpjigdojojpjoooidkmcomcm/index.html
+
+
+Students
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+List All Students
+--------------------------------------------------------
+GET: http://127.0.0.1:8000/api/students/
+--------------------------------------------------------
+
+
+List Specific Student's Information
+--------------------------------------------------------
+GET: http://127.0.0.1:8000/api/students/ab1234
+--------------------------------------------------------
+
+
+Enroll A New Student (Data Partition)
+--------------------------------------------------------
+POST: http://127.0.0.1:8000/api/students/
+{"studentID":"sc0000","lastName":"Cooper","firstName":"Sheldon"}
+GET: http://127.0.0.1:8000/api/students/
+
+sqlite3 stu1.sqlite3 
+.tables
+select * from students_student;
+
+sqlite3 stu2.sqlite3 
+.tables
+select * from students_student;
+GET: http://127.0.0.1:8000/api/students/
+--------------------------------------------------------
+
+
+Change Specific Student's Information
+--------------------------------------------------------
+PUT: http://127.0.0.1:8000/api/students/sc5332
+{"studentID":"sc5332","lastName":"Cooper","firstName":"Sheldon0000000"}
+
+GET: http://127.0.0.1:8000/api/students/sc5332
+--------------------------------------------------------
+
+
+Delete A Student (Delete realted enrollment records : Data Consistency)
+--------------------------------------------------------
+List enrollment records
+GET: http://127.0.0.1:8000/api/courses/enrollment/
+
+List students
+GET: http://127.0.0.1:8000/api/students/
+
+Delete a student
+DELETE: http://127.0.0.1:8000/api/students/ab1234
+ 
+List enrollment records
+GET: http://127.0.0.1:8000/api/courses/enrollment/
+
+List courses
+GET: http://127.0.0.1:8000/api/students/
+-----------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+Courses
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+List All Courses
+GET: http://127.0.0.1:8000/api/courses/
+--------------------------------------------------------
+
+
+List Specific Course's Information
+--------------------------------------------------------
+GET: http://127.0.0.1:8000/api/courses/COMS4252
+--------------------------------------------------------
+
+
+Add A New Course
+--------------------------------------------------------
+POST: http://127.0.0.1:8000/api/courses/
+{"courseID":"COMS4231","courseTitle":"Algorithms","roomNum":"MUDD833"}
+GET: http://127.0.0.1:8000/api/courses/
+--------------------------------------------------------
+
+
+Change Specific Course's Information
+--------------------------------------------------------
+GET: http://127.0.0.1:8000/api/courses/COMS4231
+PUT: http://127.0.0.1:8000/api/courses/COMS4231
+{"courseID":"COMS4231","courseTitle":"Advanced Algorithms","roomNum":"MUDD833"}
+GET: http://127.0.0.1:8000/api/courses/COMS4231
+--------------------------------------------------------
+
+
+Delete A Course (Delete realted enrollment records : Data Consistency)
+--------------------------------------------------------
+List enrollment records
+GET: http://127.0.0.1:8000/api/courses/enrollment/
+
+List courses
+GET: http://127.0.0.1:8000/api/courses/
+
+Delete a course
+DELETE: http://127.0.0.1:8000/api/courses/COMS4231
+ 
+List enrollment records
+GET: http://127.0.0.1:8000/api/courses/enrollment/
+
+List courses
+GET: http://127.0.0.1:8000/api/courses/
+--------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+Enrollments
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+List All Enrollment Records
+GET: http://127.0.0.1:8000/api/students/enrollment/
+--------------------------------------------------------
+
+
+Add A New Enrollment Record
+--------------------------------------------------------
+POST: http://127.0.0.1:8000/api/students/enrollment/
+{"studentID":"ab1234","courseID":"COMS4231"}
+GET: http://127.0.0.1:8000/api/students/enrollment/
+--------------------------------------------------------
+
+
+Delete A Specific Enrollment Record By StudentID, CourseID
+--------------------------------------------------------
+List All Enrollment Records
+GET: http://127.0.0.1:8000/api/students/enrollment/
+DELETE: http://127.0.0.1:8000/api/students/enrollment/COMS4231/ab1234
+{"studentID":"ab1234","courseID":"COMS4231"}
+List All Enrollment Records
+GET: http://127.0.0.1:8000/api/students/enrollment/
+--------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+Add new field into student schema (Change Database Schema)
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+http://127.0.0.1:8000/api/students/schema/
+{"field_name":"GPA","field_type":"IntegerField","default_value":0.0}
+--------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

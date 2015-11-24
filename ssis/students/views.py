@@ -83,6 +83,8 @@ def student_detail(request, sID):
 		return JSONResponse(serializer.errors, status=400)
 
 	elif request.method == 'DELETE':
+		enroll_delete(sID=sID)
+		print "test"
 		student.delete()
 		return HttpResponse(status=204)
 
@@ -132,25 +134,40 @@ def enroll_student_detail(request, sID):
 	"""
 	try:
 		if sID[0]<="m":
-			enroll_stu = Enrollment.objects.using('student1').get(studentID=sID)
+			enroll = Enrollment.objects.using('student1').get(studentID=sID)
 		else:
-			enroll_stu = Enrollment.objects.using('student2').get(studentID=sID)
-		enroll_cou = CEnrollment.objects.using('course').get(studentID=sID)
-		serializer_stu = EnrollSerializer(enroll_stu)
-		serializer_cou = CEnrollSerializer(enroll_cou)
+			enroll = Enrollment.objects.using('student2').get(studentID=sID)		
+		serializer = EnrollSerializer(enroll)
 	except Enrollment.DoesNotExist:
 		return HttpResponse(status=404)
 
 	if request.method == 'GET':
-		serializer = EnrollSerializer(enroll_stu)
-		return JSONResponse(serializer_stu.data)
+		serializer = EnrollSerializer(enroll)
+		return JSONResponse(serializer.data)
 
 	elif request.method == 'DELETE':
-		enroll_stu.delete()
-		enroll_cou.delete()
+		enroll_delete(sID=sID)
 		return HttpResponse(status=204)
 
-
+@csrf_exempt
+def enroll_delete(sID):
+	enroll = None
+	enroll_cou = None
+	try:
+		if sID[0]<="m":
+			enroll = Enrollment.objects.using('student1').get(studentID=sID)
+		else:
+			enroll = Enrollment.objects.using('student2').get(studentID=sID)
+	except Enrollment.DoesNotExist:
+		pass
+	try:
+		enroll_cou = CEnrollment.objects.using('course').get(studentID=sID)
+	except CEnrollment.DoesNotExist:
+		pass
+	if enroll:
+		enroll.delete()
+	if enroll_cou:
+		enroll_cou.delete()
 
 @csrf_exempt
 def enroll_detail(request, sID, cID):
