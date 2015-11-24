@@ -19,6 +19,14 @@ GET: http://127.0.0.1:8000/api/students/ab1234
 
 Enroll A New Student (Data Partition)
 --------------------------------------------------------
+sqlite3 stu1.sqlite3 
+.tables
+select * from students_student;
+
+sqlite3 stu2.sqlite3 
+.tables
+select * from students_student;
+
 POST: http://127.0.0.1:8000/api/students/
 {"studentID":"sc0000","lastName":"Cooper","firstName":"Sheldon"}
 GET: http://127.0.0.1:8000/api/students/
@@ -30,35 +38,36 @@ select * from students_student;
 sqlite3 stu2.sqlite3 
 .tables
 select * from students_student;
+
 GET: http://127.0.0.1:8000/api/students/
 --------------------------------------------------------
 
 
 Change Specific Student's Information
 --------------------------------------------------------
-PUT: http://127.0.0.1:8000/api/students/sc5332
-{"studentID":"sc5332","lastName":"Cooper","firstName":"Sheldon0000000"}
+PUT: http://127.0.0.1:8000/api/students/ab1234
+{"studentID":"ab1234","lastName":"Cooper","firstName":"Sheldon"}
 
-GET: http://127.0.0.1:8000/api/students/sc5332
+GET: http://127.0.0.1:8000/api/students/ab1234
 --------------------------------------------------------
 
 
-Delete A Student (Delete realted enrollment records : Data Consistency)
+Delete A Student (Delete related enrollment records : Data Consistency)
 --------------------------------------------------------
-List enrollment records
-GET: http://127.0.0.1:8000/api/courses/enrollment/
-
 List students
 GET: http://127.0.0.1:8000/api/students/
+
+List enrollment records
+GET: http://127.0.0.1:8000/api/courses/enrollment/
 
 Delete a student
 DELETE: http://127.0.0.1:8000/api/students/ab1234
  
+List students
+GET: http://127.0.0.1:8000/api/students/
+
 List enrollment records
 GET: http://127.0.0.1:8000/api/courses/enrollment/
-
-List courses
-GET: http://127.0.0.1:8000/api/students/
 -----------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
