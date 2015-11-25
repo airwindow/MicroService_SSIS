@@ -46,7 +46,7 @@ GET: http://127.0.0.1:8000/api/students/
 Change Specific Student's Information
 --------------------------------------------------------
 PUT: http://127.0.0.1:8000/api/students/ab1234
-{"studentID":"ab1234","lastName":"Cooper","firstName":"Sheldon"}
+{"studentID":"ab1234","lastName":"Cooper","firstName":"Alex"}
 
 GET: http://127.0.0.1:8000/api/students/ab1234
 --------------------------------------------------------
@@ -158,7 +158,10 @@ GET: http://127.0.0.1:8000/api/students/enrollment/
 
 Add new field into student schema (Change Database Schema)
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-http://127.0.0.1:8000/api/students/schema/
-{"field_name":"GPA","field_type":"IntegerField","default_value":3.5}
+sqlite3 db.sqlite3
+select * from students_student;
+POST: http://127.0.0.1:8000/api/students/schema/
+{"field_name":"GPA","field_type":"IntegerField","default_value":3}
+select * from students_student;
 --------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

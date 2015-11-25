@@ -122,23 +122,25 @@ def delete_enroll(cID):
 	print "test"
 	enroll_stu1 = None
 	try:
-		enroll_stu1 = SEnrollment.objects.using('student1').get(courseID=cID) 
+		enroll_stu1 = SEnrollment.objects.using('student1').filter(courseID=cID) 
 	except SEnrollment.DoesNotExist:
 		pass
 	enroll_stu2 = None
 	try:
-		enroll_stu2 = SEnrollment.objects.using('student2').get(courseID=cID)
+		enroll_stu2 = SEnrollment.objects.using('student2').filter(courseID=cID)
 	except SEnrollment.DoesNotExist:
 		pass
+	enroll_cou = None;
 	try:
-		enroll_cou = Enrollment.objects.using('course').get(courseID=cID)
+		enroll_cou = Enrollment.objects.using('course').filter(courseID=cID)
 	except Enrollment.DoesNotExist:
 		return HttpResponse(status=404)
-	enroll_cou.delete(using='course')
 	if enroll_stu1:
-		enroll_stu1.delete(using='student1')
+		enroll_stu1.delete()
 	if enroll_stu2:
-		enroll_stu2.delete(using='student2')
+		enroll_stu2.delete()
+	if enroll_cou:
+		enroll_cou.delete()
 	return HttpResponse(status=204)
 
 @csrf_exempt

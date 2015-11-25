@@ -155,13 +155,13 @@ def enroll_delete(sID):
 	enroll_cou = None
 	try:
 		if sID[0]<="m":
-			enroll = Enrollment.objects.using('student1').get(studentID=sID)
+			enroll = Enrollment.objects.using('student1').filter(studentID=sID)
 		else:
-			enroll = Enrollment.objects.using('student2').get(studentID=sID)
+			enroll = Enrollment.objects.using('student2').filter(studentID=sID)
 	except Enrollment.DoesNotExist:
 		pass
 	try:
-		enroll_cou = CEnrollment.objects.using('course').get(studentID=sID)
+		enroll_cou = CEnrollment.objects.using('course').filter(studentID=sID)
 	except CEnrollment.DoesNotExist:
 		pass
 	if enroll:
