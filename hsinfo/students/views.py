@@ -20,6 +20,8 @@ class JsonResponse(HttpResponse):
 def student_list(request):
     if request.method == 'GET':
         result = db_get.get_all()
+        if 'Items' not in result:
+            return HttpResponse(status=204)
         return JsonResponse(result['Items'])
     if request.method == 'POST':
         data = JSONParser().parse(request)
@@ -31,6 +33,8 @@ def student_detail(request, ssn):
     if request.method == 'GET':
         student = {'SSN': ssn}
         result = db_get.get(student)
+        if 'Item' not in result:
+            return HttpResponse(status=204)
         return JsonResponse(result['Item'])
     if request.method == 'PUT':
         student = {'SSN': ssn}

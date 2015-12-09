@@ -1,0 +1,33 @@
+Test steps:
+1. run rundb.sh under students/DynamoDB
+2. python manage.py runserver
+
+students module:
+	Note: To test DynamoDB, rundb.sh must be executed before all the tests
+
+	create_table.py:
+		create table if it is not created
+	load_table.py:
+		load bulk data from studentsdata.json
+	dump_table.py:
+		dump data from DynamoDB to dumptable.json which can be used to overwrite studentsdata.json
+	delete_table.py:
+		delete table. Useful for starting over
+	config.py:
+		used to load config, connect to database, and get table based on config.json
+	config.json:
+		configurations of the database. Try to move and read all the config from config.json
+		a file under the project root directory is linked to the config.json, since it seems necessary to have a copy under the root
+		I am not sure if the soft link works if it is checked out on other machines.
+		if it does not work, please hard copy the config.json under students to the project root directory (hsinfo)
+	add_item.py:
+	get_item.py:
+	update_item.py:
+	delete_item.py:
+		APIs to access database and get DynamoDB response
+
+TODO:
+1. according to Prof, first name and last name have to be secondary keys
+
+Note:
+1. Per Prof, partitioning in this project is not required, so I didn't do it
