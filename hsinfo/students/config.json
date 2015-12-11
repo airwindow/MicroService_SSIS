@@ -12,6 +12,22 @@
 			{
 				"AttributeName": "SSN",
 				"AttributeType": "S"
+			},
+			{
+				"AttributeName": "LastName",
+				"AttributeType": "S"
+			},
+			{
+				"AttributeName": "FirstName",
+				"AttributeType": "S"
+			},
+			{
+				"AttributeName": "IQ",
+				"AttributeType": "N"
+			},
+			{
+				"AttributeName": "Shoes",
+				"AttributeType": "N"
 			}
 		],
 		"Provision": {
@@ -22,6 +38,8 @@
 	"attribute": {
 		"SSN": {"name": "SSN", "type": "S"},
 		"LastName": {"name": "LastName", "type": "S"},
-		"FirstName": {"name": "FirstName", "type": "S"}
+		"FirstName": {"name": "FirstName", "type": "S"},
+		"IQ": {"name": "IQ", "type": "N"},
+		"Shoes": {"name": "Shoes", "type": "N"}
 	}
 }
