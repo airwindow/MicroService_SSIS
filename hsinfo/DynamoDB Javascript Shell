@@ -1,0 +1,59 @@
+DynamoDB Javascript Shell
+http://docs.aws.amazon.com/amazondynamodb/latest/gettingstartedguide/GettingStarted.JsShell.02.html
+
+-------------------------------------
+Javascript: Listtabels in DynamoDB
+-------------------------------------
+
+var params = {};
+
+dynamodb.listTables(params, function(err, data) {
+    if (err)
+        console.log(JSON.stringify(err, null, 2));
+    else
+        console.log(JSON.stringify(data, null, 2));
+});
+
+
+Return:
+{
+  "TableNames": [
+    "Students"
+  ]
+}
+
+
+-------------------------------------
+Javascript: Retrieve a Table Description
+-------------------------------------
+
+
+var params = {
+    TableName: "Students"
+};
+
+dynamodb.describeTable(params, function(err, data) {
+    if (err)
+        console.log(JSON.stringify(err, null, 2));
+    else
+        console.log(JSON.stringify(data, null, 2));
+});
+
+
+
+-------------------------------------
+Javascript: Scan the Table (List all items in the table)
+-------------------------------------
+var params = {
+    TableName: "Students"
+};
+
+dynamodb.scan(params, function(err, data) {
+    if (err)
+        console.log(JSON.stringify(err, null, 2));
+    else
+        console.log(JSON.stringify(data, null, 2));
+});
+
+
+
