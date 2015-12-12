@@ -1,0 +1,45 @@
+{
+	"dynamodb": "http://localhost:8888",
+	"table": "Students",
+	"create": {
+		"KeySchema": [
+			{
+				"AttributeName": "SSN",
+				"KeyType": "HASH"
+			}
+		],
+		"AttrDef": [
+			{
+				"AttributeName": "SSN",
+				"AttributeType": "S"
+			},
+			{
+				"AttributeName": "LastName",
+				"AttributeType": "S"
+			},
+			{
+				"AttributeName": "FirstName",
+				"AttributeType": "S"
+			},
+			{
+				"AttributeName": "IQ",
+				"AttributeType": "N"
+			},
+			{
+				"AttributeName": "Shoes",
+				"AttributeType": "N"
+			}
+		],
+		"Provision": {
+			"ReadCapacityUnits": 5,
+			"WriteCapacityUnits": 5
+		}
+	},
+	"attribute": {
+		"SSN": {"name": "SSN", "type": "S"},
+		"LastName": {"name": "LastName", "type": "S"},
+		"FirstName": {"name": "FirstName", "type": "S"},
+		"IQ": {"name": "IQ", "type": "N"},
+		"Shoes": {"name": "Shoes", "type": "N"}
+	}
+}
