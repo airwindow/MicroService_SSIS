@@ -1,0 +1,13 @@
+Setup IAM User
+http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html
+
+
+
+Install AWS CLI
+http://docs.aws.amazon.com/cli/latest/userguide/installing.html
+
+
+
+Rest API (library)
+http://docs.python-requests.org/en/latest/user/quickstart/#make-a-request
+requests

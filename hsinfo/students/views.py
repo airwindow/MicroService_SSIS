@@ -15,14 +15,15 @@ class JsonResponse(HttpResponse):
 
 
 
-# Create your views here.
 @csrf_exempt
 def student_list(request):
+    # List all students in the K-12 Database
     if request.method == 'GET':
         result = dbop.get_all()
         if 'Items' not in result:
             return HttpResponse(status=204)
         return JsonResponse(result['Items'])
+    # Add a new student
     if request.method == 'POST':
         print request
         data = JSONParser().parse(request)
@@ -35,18 +36,21 @@ def student_list(request):
 
 @csrf_exempt
 def student_detail(request, ssn):
+    # Retrieve a specific student
     if request.method == 'GET':
         student = {'SSN': ssn}
         result = dbop.get(student)
         if 'Item' not in result:
             return HttpResponse(status=204)
         return JsonResponse(result['Item'])
+    # Modify an existing student
     if request.method == 'PUT':
         student = {'SSN': ssn}
         data = JSONParser().parse(request)
         dbop.delete(student)
         dbop.add(data)
         return JsonResponse(data)
+    # Delete a student 
     if request.method == 'DELETE':
         student = {'SSN': ssn}
         result = dbop.delete(student)
