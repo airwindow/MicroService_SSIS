@@ -20,6 +20,8 @@ def load_service_table():
 # query message from APIGateWayQueue
 def proxy_request():
     for message in queue.receive_messages():
+        print message
+        # message.delete()
         print message.body
         request = json.loads(message.body)
         # extract the information for proxying request
@@ -27,11 +29,20 @@ def proxy_request():
         op = request['OP']
         student = request['Body']
         response_queue = request['ResponseQueue']
+        ID = request['ID']
 
+        # extract the student's ssn 
         ssn = student['SSN']
         r = requests.get(url + ssn)
-        put_message(response_queue, r.text)
-        print r.text
+
+
+        # prepare the message for client queue 
+        response_message = {};
+        response_message['status'] = r.status_code
+        response_message['body'] = r.text
+        response_message['ID'] = ID
+
+        put_message(response_queue, json.dumps(response_message))
 
 
 
@@ -39,7 +50,6 @@ def proxy_request():
 def put_message(response_queue, repsonse_content):
     client_queue = sqs.get_queue_by_name(QueueName = response_queue)
     response = client_queue.send_message(MessageBody = repsonse_content)
-
 
 
 
