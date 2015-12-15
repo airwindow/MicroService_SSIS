@@ -32,7 +32,17 @@ def proxy_request():
 
         # extract the student's ssn 
         ssn = student['SSN']
-        r = requests.get(url + ssn)
+
+        # base on op to choose right request function 
+        if op == 'GET':
+            r = requests.get(url + ssn + '/')
+        elif op == 'DELETE':
+            r = requests.delete(url + ssn + '/')
+        elif op == 'PUT':
+            r = requests.put(url + ssn + '/', data = json.dumps(student))
+        elif op == 'POST':
+            r = requests.post(url + ssn + '/', data = json.dumps(student))
+
 
         # prepare the message for client queue 
         response_message = {};
@@ -41,10 +51,6 @@ def proxy_request():
 
         file = open('debug.html', 'w+')
         file.write(r.text)
-
-
-
-
 
         response_message['ID'] = ID
         put_message(response_queue, json.dumps(response_message))

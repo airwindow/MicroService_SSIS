@@ -43,7 +43,7 @@ def get_get_message():
     message['ID'] = id_generator()
     body = {};
     # get test, ssn must be exist
-    body['SSN'] = '213456711'
+    body['SSN'] = '111111111'
     message['Body'] = body
     return message
 
@@ -89,7 +89,7 @@ def get_delete_message():
 # Note the content in the body is the content we want to microservice
 # send message to APIGateWayQueue
 def send_message():
-    message = get_get_message()
+    message = get_put_message()
     response = gateway_queue.send_message(MessageBody = json.dumps(message))
 
 
