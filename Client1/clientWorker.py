@@ -43,7 +43,7 @@ def get_get_message():
     message['ID'] = id_generator()
     body = {};
     # get test, ssn must be exist
-    body['SSN'] = '111111111'
+    body['SSN'] = '213456711'
     message['Body'] = body
     return message
 

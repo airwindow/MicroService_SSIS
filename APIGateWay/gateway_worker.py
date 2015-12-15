@@ -38,6 +38,14 @@ def proxy_request():
         response_message = {};
         response_message['status'] = r.status_code
         response_message['body'] = r.text
+
+        file = open('debug.html', 'w+')
+        file.write(r.text)
+
+
+
+
+
         response_message['ID'] = ID
         put_message(response_queue, json.dumps(response_message))
 

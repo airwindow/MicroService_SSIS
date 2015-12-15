@@ -45,6 +45,7 @@ def delete(student):
     db = config.get_db(cfg)
     table = config.get_table(db, cfg)
     response = table.delete_item(Key=student)
+    print "I was called!"
     return response
 
 
