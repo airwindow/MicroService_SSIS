@@ -1,0 +1,63 @@
+
+python manage.py makemigrations finance
+python manage.py sqlmigrate finance 0003
+python manage.py migrate
+
+
+check a table's chema
+
+sqlite> .header on
+sqlite> select * from finance_tenantattribute
+
+
+
+
+Many to one relationship in Django()
+https://docs.djangoproject.com/en/1.7/topics/db/examples/many_to_one/\\
+
+
+Make migration for a new model
+https://docs.djangoproject.com/en/1.9/intro/tutorial02/
+
+
+yangjingwei@Jingweis-MacBook-Pro:~/Desktop/MicroService_SSIS/student_saas$ python manage.py  sqlmigrate finance
+usage: manage.py sqlmigrate [-h] [--version] [-v {0,1,2,3}]
+                            [--settings SETTINGS] [--pythonpath PYTHONPATH]
+                            [--traceback] [--no-color] [--database DATABASE]
+                            [--backwards]
+                            app_label migration_name
+manage.py sqlmigrate: error: too few arguments
+yangjingwei@Jingweis-MacBook-Pro:~/Desktop/MicroService_SSIS/student_saas$ python manage.py  sqlmigrate finance 0001
+BEGIN;
+CREATE TABLE "finance_student" ("ssn" varchar(20) NOT NULL PRIMARY KEY, "first_name" varchar(30) NOT NULL, "last_name" varchar(30) NOT NULL, "balance" varchar(30) NOT NULL);
+CREATE TABLE "finance_tenant" ("tenant_id" varchar(20) NOT NULL PRIMARY KEY, "university" varchar(50) NOT NULL);
+CREATE TABLE "finance_tenantattribute" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "attribute_name" varchar(30) NOT NULL, "attribute_type" varchar(30) NOT NULL, "tenant_id" varchar(20) NOT NULL REFERENCES "finance_tenant" ("tenant_id"));
+CREATE TABLE "finance_tenantattributevalue" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "attribute_value" varchar(100) NOT NULL, "student_id" varchar(20) NOT NULL REFERENCES "finance_student" ("ssn"), "tenant_id" varchar(20) NOT NULL REFERENCES "finance_tenant" ("tenant_id"), "tenant_attribute_id" integer NOT NULL REFERENCES "finance_tenantattribute" ("id"));
+CREATE TABLE "finance_student__new" ("ssn" varchar(20) NOT NULL PRIMARY KEY, "first_name" varchar(30) NOT NULL, "last_name" varchar(30) NOT NULL, "balance" varchar(30) NOT NULL, "tenant_id" varchar(20) NOT NULL REFERENCES "finance_tenant" ("tenant_id"));
+INSERT INTO "finance_student__new" ("last_name", "balance", "first_name", "ssn", "tenant_id") SELECT "last_name", "balance", "first_name", "ssn", NULL FROM "finance_student";
+DROP TABLE "finance_student";
+ALTER TABLE "finance_student__new" RENAME TO "finance_student";
+CREATE INDEX "finance_tenantattribute_38543614" ON "finance_tenantattribute" ("tenant_id");
+CREATE INDEX "finance_tenantattributevalue_30a811f6" ON "finance_tenantattributevalue" ("student_id");
+CREATE INDEX "finance_tenantattributevalue_38543614" ON "finance_tenantattributevalue" ("tenant_id");
+CREATE INDEX "finance_tenantattributevalue_28efc8b9" ON "finance_tenantattributevalue" ("tenant_attribute_id");
+CREATE INDEX "finance_student_38543614" ON "finance_student" ("tenant_id");
+
+COMMIT;
+
+
+
+DataBase Realted
+
+CREATE TABLE "finance_tenantattributevalue" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "attribute_value" varchar(100) NOT NULL, 
+"student_id" varchar(20) NOT NULL REFERENCES "finance_student" ("ssn"), 
+"tenant_id" varchar(20) NOT NULL REFERENCES "finance_tenant" ("tenant_id"), 
+!!!!"tenant_attribute_id" integer NOT NULL REFERENCES "finance_tenantattribute" ("id"));
+
+
+
+
+
+
+
+

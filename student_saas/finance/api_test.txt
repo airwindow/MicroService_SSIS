@@ -1,0 +1,34 @@
+
+APIS:
+Tenant CRUD
+{"tenant_id": "111111111", "university": "Columbia", "state": "NY"}
+
+
+Attribute CRUD
+http://127.0.0.1:8000/api/student/111111111/
+{"tenant_id": "111111111", "attribute_name": "secondary_major", "attribute_type": "String"}
+
+
+Tenant CRUD
+http://127.0.0.1:8000/api/finance/tenant/111111111/
+{"tenant_id": "111111111", "university": "Columbia", "state": "NY"}
+
+
+Get Tenant Detail
+http://127.0.0.1:8000/api/finance/tenant/111111111/
+
+
+List all attributes belong to a tenant
+http://127.0.0.1:8000/api/finance/attribute/111111111/
+
+
+student = Student(ssn=data['ssn'], tenant_id=data['tenant_id'], first_name=data['first_name'], last_name=data['last_name'], balance=data['balance'])
+attribute_value = TenantAttributeValue(student_id=ssn, tenant_id=tid, tenant_attribute_id=attribute['tenant_attribute_id'], attribute_value=data['attribute_value'])
+
+Student CRUD
+http://127.0.0.1:8000/api/finance/student/111111111/111111111/
+{"tenant_id": "111111111", "ssn": "111111111", "first_name": "Jack", "last_name" : "chen", "balance" : "1000", "major" : "EE"}
+
+GET:
+http://127.0.0.1:8000/api/finance/student/111111111/111111121/
+{"first_name":"Chandler","last_name":"Young","tenant_id":"111111111","secondary_major":"CS","ssn":"111111121","balance":"0.0"}
