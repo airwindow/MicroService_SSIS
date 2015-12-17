@@ -20,7 +20,7 @@ class JsonResponse(HttpResponse):
 @csrf_exempt
 def tenant_attribute_list(request, tid):
 	'''
-	retrieve all added attrubutes belong to the tenant
+	retrieve all added attrubutes belong to the tenant and add a new attribute to a tenant
 	'''
 	attributes = TenantAttribute.objects.filter(tenant_id = tid)
 	if request.method == 'GET':
@@ -32,15 +32,8 @@ def tenant_attribute_list(request, tid):
 			item['attribute_name'] = attribute.attribute_name
 			item['attribute_type'] = attribute.attribute_type
 			response.append(item)
-		return JsonResponse(response)      
+		return JsonResponse(response)   
 
-
-
-@csrf_exempt
-def tenant_attribute(request, tid, attr_name):
-	'''
-	the CRUD functions for tenant to manage its additional attributes
-	'''
 	# add a new attrbute for a tenant
 	if request.method == 'POST':
 		data = JSONParser().parse(request)
@@ -49,6 +42,13 @@ def tenant_attribute(request, tid, attr_name):
 		attribute.save()
 		return JsonResponse(data)
 
+
+
+@csrf_exempt
+def tenant_attribute(request, tid, attr_name):
+	'''
+	the RUD functions for tenant to manage its additional attributes
+	'''
 	# add does not exist exception checking! 
 	attribute = TenantAttribute.objects.get(tenant_id = tid, attribute_name = attr_name)
 
@@ -66,16 +66,24 @@ def tenant_attribute(request, tid, attr_name):
 
 
 @csrf_exempt
-def student_finance(request, tid, ssn):
+def student_finance_list(request, tid):
 	'''
-	Cause the model of Django. 
-	"student_id" in TenantAttributeValue table refers to "ssn"(primary_key) in Student table
+	List all students of a tenant and add a student into a tenant's database
 	'''
+	if request.method == 'GET':
+		students = Student.objects.filter(tenant_id = tid)
+		response = []
+		for student in students:
+			item = {}
+			item["tenant_id"] = student.tenant_id
+			item["ssn"] = student.ssn
+			item["first_name"] = student.first_name
+			item["last_name"] = student.last_name
+			item["balance"] = student.balance
+			response.append(item)
+		return JsonResponse(response)
 
 
-	'''
-	Add a student into the fiance service
-	'''
 	if request.method == 'POST':
 		data = JSONParser().parse(request)
 		attributes = TenantAttribute.objects.filter(tenant_id=data['tenant_id'])
@@ -92,6 +100,14 @@ def student_finance(request, tid, ssn):
 				attribute_value.save()
 		return JsonResponse(data)
 
+
+
+@csrf_exempt
+def student_finance(request, tid, ssn):
+	'''
+	Cause the model of Django. 
+	"student_id" in TenantAttributeValue table refers to "ssn"(primary_key) in Student table
+	'''
 
 	'''
 	List a student's finance info
@@ -147,20 +163,23 @@ def student_finance(request, tid, ssn):
 		return JsonResponse(data)
 
 
+
 @csrf_exempt
 def tenant_list(request):
 	'''
-	List all tenants in the database
+	List all tenants in the database and add a tenant into database
 	'''
 	if request.method == 'GET':
-		data = Tenant.objects.all()
+		tenants = Tenant.objects.all()
+		response = []
+		for tenant in tenants:
+			item = {}
+			item['tenant_id'] = tenant.tenant_id
+			item['university'] = tenant.university
+			item['state'] = tenant.state
+			response.append(item)
+		return JsonResponse(response)
 
-	
-@csrf_exempt
-def tenant_detail(request, tid):
-	'''
-	CRUD over tenant information
-	'''
 	if request.method == 'POST':
 		try:
 			data = JSONParser().parse(request)
@@ -170,11 +189,19 @@ def tenant_detail(request, tid):
 		except Tenant.DoesNotExist:
 			return HttpResponse(status=500)
 
+
+	
+@csrf_exempt
+def tenant_detail(request, tid):
+	'''
+	RUD over tenant information
+	'''
 	#GET/DELETE/UPDATE
 	try:
 		tenant = Tenant.objects.get(pk=tid)
 	except:
 		return HttpResponse(status=404)
+
 	response = {};
 	response['tenant_id'] = tenant.tenant_id
 	response['university'] = tenant.university
