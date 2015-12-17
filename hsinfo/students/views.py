@@ -22,16 +22,13 @@ def student_list(request):
     '''
     # List all students in the K-12 Database
     if request.method == 'GET':
-        result = dbop.get_all()
-        if 'Items' not in result:
-            return HttpResponse(status=204)
-        return JsonResponse(result['Items'])
+        students = dbop.get_all()
+        reponse = []
+        return JsonResponse(students["Items"])
 
+    # add a new student into K-12 Database
     if request.method == 'POST':
-        print request
         data = JSONParser().parse(request)
-        print data
-        # dbop.load_from_json_dict(data)
         dbop.add(data)
         return JsonResponse(data)
 
@@ -44,7 +41,6 @@ def student_detail(request, ssn):
     RUD for students in K-12 Database
 
     '''
-
     # Retrieve a specific student
     if request.method == 'GET':
         student = {'SSN': ssn}

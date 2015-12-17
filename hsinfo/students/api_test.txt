@@ -1,1 +1,24 @@
+-------------------------------------
 API test for K-12 services
+-------------------------------------
+List all student in K-12
+GET: http://127.0.0.1:8111/api/k12/
+
+
+Add a new student into K-12
+POST: http://127.0.0.1:8111/api/k12/
+{"SSN":"122222222", "LastName":"Mike", "FirstName":"Young", "Shoes":"Adidas", "IQ":"180"}
+
+
+Get a student's info in K-12
+GET: http://127.0.0.1:8111/api/k12/122222222/
+
+
+Update a student's info in K-12
+PUT: http://127.0.0.1:8111/api/k12/122222222/
+{"IQ":"190","LastName":"Mike","SSN":"122222222","Shoes":"Adidas","FirstName":"Young"}
+GET: http://127.0.0.1:8111/api/k12/122222222/
+
+Delete a student in K-12
+Delete: http://127.0.0.1:8111/api/k12/123456789/
+GET: http://127.0.0.1:8111/api/k12/
