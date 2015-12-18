@@ -50,8 +50,10 @@ def proxy_request():
         response_message['body'] = r.text
         response_message['ID'] = ID
 
-        file = open('debug.html', 'w+')
-        file.write(r.text)
+        if r.status_code == 500:
+            file = open('debug.html', 'w+')
+            file.write(r.text)
+            break
         put_message(response_queue, json.dumps(response_message))
 
 
@@ -125,10 +127,10 @@ def proxy_tenant_attribute_request(request, url):
         r = requests.post(url + attribute['tenant_id'] + '/', data = json.dumps(attribute))
     # Update an attribute of a tenant 
     elif op == 'PUT':
-        r = requests.put(url + attribute['tenant_id'] + '/' + attribute['attribute_name'] + '/', data = json.dumps(attribute))
+        r = requests.put(url + attribute['tenant_id'] + '/' + attribute['old_attribute_name'] + '/', data = json.dumps(attribute))
     # Delete an attribute of a tenant
     elif op == 'DELETE':
-        r = requests.delete(url + attribute['tenant_id'] + '/' + attribute['attribute_name'] + '/')
+        r = requests.delete(url + attribute['tenant_id'] + '/' + attribute['old_attribute_name'] + '/')
     return r
 
 
@@ -137,19 +139,24 @@ def proxy_student_finance_request(request, url):
     '''
     proxy the request for student finance info
     '''
+    op = request['OP']
     student_finace = request['Body']
     # List all students of a tenant 
     if op == 'GET':
-        r = requests.get(url + student_finace['tenant_id'] + '/')
+        if 'ssn' in request['Body']:
+            r = r = requests.get(url + student_finace['tenant_id'] + '/' + student_finace['ssn'] + '/')
+        else:
+            r = requests.get(url + student_finace['tenant_id'] + '/')
     # Add a new student for a tennat
     elif op == 'POST':
         r = requests.post(url + student_finace['tenant_id'] + '/', data = json.dumps(student_finace))
     # Update a student's information
     elif op == 'PUT':
-        r = requests.put(url + student_finace['tenant_id'] + '/' + student_finace['ssn'] , data = json.dumps(student_finace))
+        print student_finace
+        r = requests.put(url + student_finace['tenant_id'] + '/' + student_finace['ssn'] + '/' , data = json.dumps(student_finace))
     # Delete a student of a tenant
     elif op == 'DELETE':
-        r = requests.delete(url + student_finace['tenant_id'] + '/' + student_finace['ssn'])
+        r = requests.delete(url + student_finace['tenant_id'] + '/' + student_finace['ssn'] + '/')
     return r
 
 
