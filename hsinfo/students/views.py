@@ -24,6 +24,8 @@ def student_list(request):
     if request.method == 'GET':
         students = dbop.get_all()
         reponse = []
+        print "I was called!"
+        print students["Items"]
         return JsonResponse(students["Items"])
 
     # add a new student into K-12 Database

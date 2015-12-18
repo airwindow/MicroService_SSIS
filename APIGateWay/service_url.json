@@ -1,1 +1,1 @@
-[{"ServiceName": "K12Info", "URL": "http://127.0.0.1:8000/api/k12/"}]
+[{"ServiceName": "K12Info", "URL": "http://127.0.0.1:8111/api/k12/"}, {"ServiceName": "FinanceTenantInfo", "URL": "http://127.0.0.1:8000/api/finance/tenant/"}, {"ServiceName": "FinanceTenantAttributeInfo", "URL": "http://127.0.0.1:8000/api/finance/attribute/"}, {"ServiceName": "FinanceStudentInfo", "URL": "http://127.0.0.1:8000/api/finance/student/"}]
