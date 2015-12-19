@@ -23,7 +23,6 @@ def load_service_table():
 def proxy_request():
     for message in gateway_queue.receive_messages():
         '''
-        extract the information for proxying request
         multi-tenancy is a little complicated, it invloves the gate way for tenant, attribute and student
         '''
         print "Message at FinanceGateWayQueue:  " +  message.body
@@ -54,6 +53,7 @@ def proxy_request():
             file = open('debug.html', 'w+')
             file.write(r.text)
             break
+
         put_message(response_queue, json.dumps(response_message))
 
 
@@ -67,11 +67,9 @@ def proxy_k12info_request(request, url):
     if op == 'GET':
         # Retrieve information of studnet
         if 'SSN' in request['Body']:
-            print 'debug 1'
             r = requests.get(url + student['SSN'] + '/')
         # List all students in the K-12 Database
         else:
-            print 'debug 2'
             r = requests.get(url)
     # Add a new student into K12
     elif op == 'POST':
@@ -161,8 +159,10 @@ def proxy_student_finance_request(request, url):
 
 
 
-# put a message into a given queue 
 def put_message(response_queue, repsonse_content):
+    '''
+    put a message into a given queue 
+    '''
     client_queue = sqs.get_queue_by_name(QueueName = response_queue)
     response = client_queue.send_message(MessageBody = repsonse_content)
 
@@ -170,7 +170,7 @@ def put_message(response_queue, repsonse_content):
 
 # main function
 # step 1: load url table
-# step 2: perdiocally read message from input queue and proxy the request
+# step 2: perdiocally read message from input queue, if the pre request was finished, fetech the next request message from test queue
 if __name__ == '__main__':
     # load url table
     url_table = {}
