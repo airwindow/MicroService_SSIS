@@ -26,7 +26,7 @@ def send_message(message):
 
 def get_message():
     '''
-    read  message from client queue and return the message's id 
+    read message from client queue and return the message's id 
     '''
     for message in client_queue.receive_messages():
         print "Message at Client Queue:  " +  message.body
@@ -51,11 +51,11 @@ def wrap_request(service_name, response_queue, id, op, body):
 
 
 
-def get_k12_test_queue():
+def fill_k12_test_case(q):
     '''
     a queue of testing 'K12Info'
     '''
-    q = Queue.Queue()
+    # q = Queue.Queue()
     # List all students in K12
     body = {}
     q.put(wrap_request('K12Info', 'ClientOneQueue', id_generator(), 'GET', body))
@@ -81,11 +81,11 @@ def get_k12_test_queue():
 
 
 
-def get_tenant_test_queue():
+def fill_tenant_test_case(q):
     '''
     a queue of testing 'FinanceTenantInfo'
     '''
-    q = Queue.Queue()
+    # q = Queue.Queue()
     # List all tenants
     body = {}
     q.put(wrap_request('FinanceTenantInfo', 'ClientOneQueue', id_generator(), 'GET', body))
@@ -117,11 +117,11 @@ def get_tenant_test_queue():
 
 
 
-def get_attribute_test_queue():
+def fill_attribute_test_case(q):
     '''
     a queue of testing 'FinanceTenantAttributeInfo'
     '''
-    q = Queue.Queue()
+    # q = Queue.Queue()
     # List all additional attributes customermized by a tenant
     body = {"tenant_id": "111111111"}
     q.put(wrap_request('FinanceTenantAttributeInfo', 'ClientOneQueue', id_generator(), 'GET', body))
@@ -156,12 +156,12 @@ def get_attribute_test_queue():
 
 
 
-def get_student_test_queue():
+def fill_student_test_case(q):
     '''
     a queue of testing 'FinanceStudentInfo' 
     note: only operation on student not attribute_
     '''
-    q = Queue.Queue()
+    # q = Queue.Queue()
     # List all  students of a tenant
     body = {"tenant_id": "111111111"}
     q.put(wrap_request('FinanceStudentInfo', 'ClientOneQueue', id_generator(), 'GET', body))
@@ -197,16 +197,23 @@ if __name__ == '__main__':
     gateway_queue = sqs.get_queue_by_name(QueueName='APIGateWayQueue')
     client_queue = sqs.get_queue_by_name(QueueName='ClientOneQueue')
     # Get test queue(filled with test cases)
+    test_queue = Queue.Queue()
+    fill_k12_test_case(test_queue)
+    fill_tenant_test_case(test_queue)
+    fill_attribute_test_case(test_queue)
+    fill_student_test_case(test_queue)
+
+    # test_queue = get_k12_test_queue()
     # test_queue = get_tenant_test_queue()
     # test_queue = get_attribute_test_queue()
-    test_queue = get_student_test_queue()
+    # test_queue = get_student_test_queue()
 
     message = test_queue.get()
     send_message(message)
     wait_request_id = message['ID']
 
     while True:
-        time.sleep(5)
+        time.sleep(1)
         finish_request_id = get_message()
         if finish_request_id == wait_request_id and not test_queue.empty():
             message = test_queue.get()

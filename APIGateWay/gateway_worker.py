@@ -25,7 +25,7 @@ def proxy_request():
         '''
         multi-tenancy is a little complicated, it invloves the gate way for tenant, attribute and student
         '''
-        print "Message at FinanceGateWayQueue:  " +  message.body
+        print "Message GateWay Queue:  " +  message.body
         request = json.loads(message.body)
         message.delete()
         url = url_table[request['ServiceName']]
@@ -182,4 +182,4 @@ if __name__ == '__main__':
 
     while True:
         proxy_request()
-        time.sleep(5)
+        time.sleep(1)

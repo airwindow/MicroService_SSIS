@@ -34,7 +34,7 @@ def student_list(request):
         if 'Item' in result:
             return HttpResponse("The student exists!", status=400)
         dbop.add(data)
-        return JsonResponse(data)
+        return HttpResponse(status = 200)
 
 
 
