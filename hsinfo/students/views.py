@@ -24,13 +24,15 @@ def student_list(request):
     if request.method == 'GET':
         students = dbop.get_all()
         reponse = []
-        print "I was called!"
-        print students["Items"]
         return JsonResponse(students["Items"])
 
     # add a new student into K-12 Database
     if request.method == 'POST':
         data = JSONParser().parse(request)
+        student = {'SSN': data['SSN']}
+        result = dbop.get(student)
+        if 'Item' in result:
+            return HttpResponse("The student exists!", status=400)
         dbop.add(data)
         return JsonResponse(data)
 
@@ -48,19 +50,25 @@ def student_detail(request, ssn):
         student = {'SSN': ssn}
         result = dbop.get(student)
         if 'Item' not in result:
-            return HttpResponse(status=204)
+            return HttpResponse(status=404)
         return JsonResponse(result['Item'])
     
     # Modify an existing student
     if request.method == 'PUT':
         student = {'SSN': ssn}
         data = JSONParser().parse(request)
+        result = dbop.get(student)
+        if 'Item' not in result:
+            return HttpResponse("The student does not exist!", status=404)
         dbop.delete(student)
         dbop.add(data)
-        return JsonResponse(data)
+        return HttpResponse(status = 200)
     
     # Delete a student 
     if request.method == 'DELETE':
         student = {'SSN': ssn}
+        result = dbop.get(student)
+        if 'Item' not in result:
+            return HttpResponse("The student does not exist!", status=404)
         result = dbop.delete(student)
         return HttpResponse()

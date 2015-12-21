@@ -22,6 +22,11 @@ def tenant_attribute_list(request, tid):
 	'''
 	retrieve all added attrubutes belong to the tenant and add a new attribute to a tenant
 	'''
+	try:
+		tenant = Tenant.objects.get(tenant_id = tid)
+	except Tenant.DoesNotExist:
+		return HttpResponse("The tenant does not exist!", status=400)
+
 	attributes = TenantAttribute.objects.filter(tenant_id = tid)
 	if request.method == 'GET':
 		print attributes
@@ -40,7 +45,7 @@ def tenant_attribute_list(request, tid):
 		# note the order of attribute in the table
 		attribute = TenantAttribute(tenant_id = data['tenant_id'], attribute_name = data['attribute_name'], attribute_type = data['attribute_type'])
 		attribute.save()
-		return JsonResponse(data)
+		return HttpResponse(status=200)
 
 
 
@@ -49,8 +54,11 @@ def tenant_attribute(request, tid, attr_name):
 	'''
 	the RUD functions for tenant to manage its additional attributes
 	'''
-	# add does not exist exception checking! 
-	attribute = TenantAttribute.objects.get(tenant_id = tid, attribute_name = attr_name)
+	# add does not exist exception checking!
+	try:
+		attribute = TenantAttribute.objects.get(tenant_id = tid, attribute_name = attr_name)
+	except TenantAttribute.DoesNotExist:
+		return HttpResponse("The attribute record does not exist!", status=400)
 
 	if request.method == 'DELETE':
 		attribute.delete()
@@ -70,6 +78,11 @@ def student_finance_list(request, tid):
 	'''
 	List all students of a tenant and add a student into a tenant's database
 	'''
+	try:
+		tenant = Tenant.objects.get(tenant_id = tid)
+	except Tenant.DoesNotExist:
+		return HttpResponse("The tenant does not exist!", status=400)
+
 	if request.method == 'GET':
 		students = Student.objects.filter(tenant_id = tid)
 		response = []
@@ -98,7 +111,7 @@ def student_finance_list(request, tid):
 			if attribute.attribute_name in data:
 				attribute_value = TenantAttributeValue(student_id=data['ssn'], tenant_id=data['tenant_id'], tenant_attribute_id=attribute.id, attribute_value=data[attribute.attribute_name])
 				attribute_value.save()
-		return JsonResponse(data)
+		return HttpResponse(status=200)
 
 
 
@@ -108,6 +121,10 @@ def student_finance(request, tid, ssn):
 	Cause the model of Django. 
 	"student_id" in TenantAttributeValue table refers to "ssn"(primary_key) in Student table
 	'''
+	try:
+		student = Student.objects.get(tenant_id = tid, ssn = ssn)
+	except Student.DoesNotExist:
+		return HttpResponse("The student record does not exist!", status=400)
 
 	'''
 	List a student's finance info
@@ -160,7 +177,7 @@ def student_finance(request, tid, ssn):
 			if attribute.attribute_name in data:
 				attribute_value = TenantAttributeValue(student_id=data['ssn'], tenant_id=data['tenant_id'], tenant_attribute_id=attribute.id, attribute_value=data[attribute.attribute_name])
 				attribute_value.save()
-		return JsonResponse(data)
+		return HttpResponse(status=200)
 
 
 
@@ -180,14 +197,16 @@ def tenant_list(request):
 			response.append(item)
 		return JsonResponse(response)
 
+	# The tenant_id must not been used yet
 	if request.method == 'POST':
-		try:
-			data = JSONParser().parse(request)
+		data = JSONParser().parse(request)
+		try: 
+			tenant = Tenant.objects.get(pk=data['tenant_id'])
+		except Tenant.DoesNotExist:
 			t = Tenant(tenant_id = data['tenant_id'], university = data['university'], state = data['state'])
 			t.save()
-			return JsonResponse(data)
-		except Tenant.DoesNotExist:
-			return HttpResponse(status=500)
+			return HttpResponse(status=200)
+		return HttpResponse("The tenant exists!", status=400)	
 
 
 	
@@ -199,8 +218,8 @@ def tenant_detail(request, tid):
 	#GET/DELETE/UPDATE
 	try:
 		tenant = Tenant.objects.get(pk=tid)
-	except:
-		return HttpResponse(status=404)
+	except Tenant.DoesNotExist:
+		return HttpResponse("The tenant does not exist!", status=404)
 
 	response = {};
 	response['tenant_id'] = tenant.tenant_id
@@ -211,13 +230,10 @@ def tenant_detail(request, tid):
 		return JsonResponse(response)
 	elif request.method == 'DELETE':
 		tenant.delete()
-		return JsonResponse(response)
+		return HttpResponse(status=200)
 	elif request.method ==  'PUT':
-		try:
-			data = JSONParser().parse(request)
-			tenant.university = data['university']
-			tenant.state = data['state']
-			tenant.save()
-			return JsonResponse(data)
-		except Tenant.DoesNotExist:
-			return HttpResponse(status=500)
+		data = JSONParser().parse(request)
+		tenant.university = data['university']
+		tenant.state = data['state']
+		tenant.save()
+		return HttpResponse(status=200)

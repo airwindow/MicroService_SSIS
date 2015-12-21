@@ -3,7 +3,7 @@ import json
 
 def load_config():
     config = None
-    with open('students/lib/config.json') as config_json:
+    with open('config.json') as config_json:
         config = json.load(config_json)
     return config
 
