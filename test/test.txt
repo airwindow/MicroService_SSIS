@@ -1,0 +1,126 @@
+---------------------------------------------------------------------
+API test for K-12 services
+---------------------------------------------------------------------
+List all student in K-12
+GET: http://127.0.0.1:8111/api/k12/
+
+
+Add a new student into K-12
+POST: http://127.0.0.1:8111/api/k12/
+{"SSN":"122222222", "LastName":"Mike", "FirstName":"Young", "Shoes":"Adidas", "IQ":"180"}
+
+
+Get a student's info in K-12
+GET: http://127.0.0.1:8111/api/k12/122222222/
+
+
+Update a student's info in K-12
+PUT: http://127.0.0.1:8111/api/k12/122222222/
+{"IQ":"190","LastName":"Mike","SSN":"122222222","Shoes":"Adidas","FirstName":"Young"}
+GET: http://127.0.0.1:8111/api/k12/122222222/
+
+Delete a student in K-12
+Delete: http://127.0.0.1:8111/api/k12/123456789/
+GET: http://127.0.0.1:8111/api/k12/
+
+
+-----------------------------------------------------------------------
+Tenant CRUD
+-----------------------------------------------------------------------
+List all tenants:
+GET: http://127.0.0.1:8000/api/finance/tenant/
+
+
+Add a new tenant:
+POST: http://127.0.0.1:8000/api/finance/tenant/
+{"tenant_id":"111111111","university":"Columbia","state":"NY"}
+{"tenant_id":"111111112","university":"Yale","state":"CT"}
+
+
+List all tenants:
+GET: http://127.0.0.1:8000/api/finance/tenant/
+
+
+Retrieve a tenant
+GET: http://127.0.0.1:8000/api/finance/tenant/111111111/
+
+
+Update a tenant
+PUT: http://127.0.0.1:8000/api/finance/tenant/111111111/
+{"tenant_id":"111111112","university":"MIT","state":"MA"}
+
+
+List all tenants:
+GET: http://127.0.0.1:8000/api/finance/tenant/
+
+
+Delete a tenant
+PUT: http://127.0.0.1:8000/api/finance/tenant/111111112/
+
+List all tenants:
+GET: http://127.0.0.1:8000/api/finance/tenant/
+
+
+
+
+-----------------------------------------------------------------------
+Attribute CRUD
+-----------------------------------------------------------------------
+List a tenant's additional attributes
+GET: http://127.0.0.1:8000/api/finance/attribute/111111111/
+
+Add a new attribute to a tenant
+GET: http://127.0.0.1:8000/api/finance/attribute/111111111/
+{"tenant_id": "111111111", "attribute_name": "grade", "attribute_type": "String"}
+
+Update an attribute of a tenant 
+http://127.0.0.1:8000/api/finance/attribute/111111111/grade/
+{"tenant_id": "111111111", "attribute_name": "GPA", "attribute_type": "String"}
+
+Delete an attribute of a tenant
+http://127.0.0.1:8000/api/finance/attribute/111111111/shoes/
+{"tenant_id": "111111111", "attribute_name": "GPA", "attribute_type": "String"}
+
+List a tenant's additional attributes
+GET: http://127.0.0.1:8000/api/finance/attribute/111111111/
+
+Add a new attribute to a tenant
+GET: http://127.0.0.1:8000/api/finance/attribute/111111111/
+{"tenant_id": "111111111", "attribute_name": "GPA", "attribute_type": "String"}
+
+Add a new attribute to a tenant
+GET: http://127.0.0.1:8000/api/finance/attribute/111111111/
+{"tenant_id": "111111111", "attribute_name": "major", "attribute_type": "String"}
+
+List a tenant's additional attributes
+GET: http://127.0.0.1:8000/api/finance/attribute/111111111/
+
+
+
+-----------------------------------------------------------------------
+Student(Finance) CRUD
+-----------------------------------------------------------------------
+List all students of a tenant(Only common informatio of student list)
+GET: http://127.0.0.1:8000/api/finance/student/111111111/
+
+Add a new student for a tennat
+POST: http://127.0.0.1:8000/api/finance/student/111111111/{"first_name":"Tom","last_name":"Cat","tenant_id":"111111111","major":"CE","GPA":"4.3","ssn":"123456789","balance":"0.0"}
+
+Retrieve a student's information(Common Information + Additional Information)
+GET: http://127.0.0.1:8000/api/finance/student/111111111/123456789/
+
+Update a student's information
+PUT: http://127.0.0.1:8000/api/finance/student/111111111/123456789/
+{"tenant_id": "111111111", "ssn": "123456789", "first_name": "Tom", "last_name" : "Cat", "balance" : "0.0", "major" : "CS", "GPA" : "4.33"}
+
+
+
+-----------------------------------------------------------------------
+Combination 
+-----------------------------------------------------------------------
+Case: Delete an attribute from a tenant, and see the realted changes for student's informaiton 
+Drop "GPA" attribute for tenant "111111111"
+Delete: http://127.0.0.1:8000/api/finance/attribute/111111111/GPA/
+
+Retrieve the information of student "123456789"
+GET: http://127.0.0.1:8000/api/finance/student/111111111/123456789/
